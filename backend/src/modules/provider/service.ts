@@ -148,28 +148,32 @@ class MyPaymentProviderService extends AbstractPaymentProvider<{}> {
         }
     > {
         const externalId = paymentSessionData.id
-
-
-
         try {
-            // const paymentData = await authorizePayment(externalId)
+            const response: AxiosResponse<any> = await axios.get(
+                `${this.baseUrl}/charges/${externalId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${this.secretKey}`,
+                    },
+                }
+            );
 
+            console.log("Authorize Payment Response:", response.data);
 
-            console.log("<<< authorize payment", paymentSessionData, context)
-
-            return {
-                data: {
-                    // ...paymentData,
-                    id: externalId
-                },
-                status: "authorized"
+            if (response.data.status === "AUTHORIZED") {
+                // return { status: "authorized" };
+                return {
+                    data: {
+                        id: externalId
+                    },
+                    status: "authorized"
+                }
             }
-        } catch (e) {
-            return {
-                error: e,
-                code: "unknown",
-                detail: e
-            }
+
+            throw new Error("Payment not authorized");
+        } catch (error: any) {
+            console.error("Error authorizing payment:", error.response?.data || error.message);
+            throw new Error("Failed to authorize payment");
         }
     }
 
