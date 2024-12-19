@@ -34,6 +34,12 @@ const Payment = ({
     activeSession?.provider_id ?? ""
   )
 
+  const [card, setCard] = useState({
+    cardNumber: "123-123-123",
+    cardNickname: "my card",
+    cardExpiry: "12-12-12",
+  })
+
   const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
@@ -85,16 +91,35 @@ const Payment = ({
   const handleSubmit = async () => {
     setIsLoading(true)
     try {
-      const shouldInputCard =
-        isStripeFunc(selectedPaymentMethod) && !activeSession
+      // const shouldInputCard =
+      //   isStripeFunc(selectedPaymentMethod) && !activeSession
 
-      if (!activeSession) {
-        await initiatePaymentSession(cart, {
-          provider_id: selectedPaymentMethod,
-        })
-      }
+      // if (!activeSession) {
+      //   await initiatePaymentSession(cart, {
+      //     provider_id: selectedPaymentMethod,
+      //   })
+      // }
 
-      if (!shouldInputCard) {
+      // if (!shouldInputCard) {
+      //   return router.push(
+      //     pathname + "?" + createQueryString("step", "review"),
+      //     {
+      //       scroll: false,
+      //     }
+      //   )
+      // }
+
+      const shouldInputCard = true
+
+      // if (!activeSession) {
+      const initiate_payment_response = await initiatePaymentSession(cart, {
+        provider_id: selectedPaymentMethod,
+      })
+      // }
+
+      console.log({ initiate_payment_response })
+
+      if (card.cardNickname.length > 0) {
         return router.push(
           pathname + "?" + createQueryString("step", "review"),
           {
@@ -115,6 +140,14 @@ const Payment = ({
 
   return (
     <div className="bg-white">
+      {JSON.stringify({
+        isOpen,
+        paymentReady,
+        // activeSession,
+        isStripe,
+        stripeReady,
+      })}
+
       <div className="flex flex-row items-center justify-between mb-6">
         <Heading
           level="h2"
@@ -133,8 +166,8 @@ const Payment = ({
           <Text>
             <button
               onClick={handleEdit}
-              className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
               data-testid="edit-payment-button"
+              className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
             >
               Edit
             </button>
@@ -164,6 +197,8 @@ const Payment = ({
                     )
                   })}
               </RadioGroup>
+
+              {/* 
               {isStripe && stripeReady && (
                 <div className="mt-5 transition-all duration-150 ease-in-out">
                   <Text className="txt-medium-plus text-ui-fg-base mb-1">
@@ -182,22 +217,40 @@ const Payment = ({
                     }}
                   />
                 </div>
-              )}
-            </>
-          )}
+              )} */}
 
-          {paidByGiftcard && (
-            <div className="flex flex-col w-1/3">
-              <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                Payment method
-              </Text>
-              <Text
-                className="txt-medium text-ui-fg-subtle"
-                data-testid="payment-method-summary"
-              >
-                Gift card
-              </Text>
-            </div>
+              <div className="mt-5 transition-all duration-150 ease-in-out">
+                <Text className="txt-medium-plus text-ui-fg-base mb-1">
+                  Enter your card details:
+                </Text>
+
+                <div
+                  style={{
+                    background: "whitesmoke",
+                    padding: "5px",
+                  }}
+                >
+                  <input value={card.cardNumber} placeholder="card number" />
+                  <input value={card.cardNickname} placeholder="nick name" />
+                  <input
+                    value={card.cardExpiry as any}
+                    placeholder="expiry date"
+                  />
+                </div>
+
+                {/* <CardElement
+                  options={useOptions as StripeCardElementOptions}
+                  onChange={(e) => {
+                    setCardBrand(
+                      e.brand &&
+                        e.brand.charAt(0).toUpperCase() + e.brand.slice(1)
+                    )
+                    setError(e.error?.message || null)
+                    setCardComplete(e.complete)
+                  }}
+                /> */}
+              </div>
+            </>
           )}
 
           <ErrorMessage

@@ -36,14 +36,14 @@ export default async function OrderCompletedTemplate({
             <span>Thank you!</span>
             <span>Your order was placed successfully.</span>
           </Heading>
-          <OrderDetails order={order} />
+          {/* <OrderDetails order={order} /> */}
           <Heading level="h2" className="flex flex-row text-3xl-regular">
             Summary
           </Heading>
           <Items items={order.items} />
           <CartTotals totals={order} />
-          <ShippingDetails order={order} />
-          <PaymentDetails order={order} />
+          {/* <ShippingDetails order={order} /> */}
+          {/* <PaymentDetails order={order} /> */}
           <Help />
         </div>
       </div>

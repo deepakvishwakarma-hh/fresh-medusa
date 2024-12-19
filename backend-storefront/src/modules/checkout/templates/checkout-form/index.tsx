@@ -35,6 +35,8 @@ export default async function CheckoutForm({
           <Shipping cart={cart} availableShippingMethods={shippingMethods} />
         </div>
 
+        {JSON.stringify(paymentMethods)}
+
         <div>
           <Payment cart={cart} availablePaymentMethods={paymentMethods} />
         </div>
