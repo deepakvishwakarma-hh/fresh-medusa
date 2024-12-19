@@ -54,22 +54,11 @@ class MyPaymentProviderService extends AbstractPaymentProvider<{}> {
     }
 
 
-
-    // {
-    //     context: { session_id: 'payses_01JFEZKKZ34HE388J0X3EBKYZE' },
-    //     amount: 10,
-    //     currency_code: 'eur'
-    //   }
+    // working fine;
 
     async initiatePayment(
         context: CreatePaymentProviderSession
     ): Promise<PaymentProviderError | PaymentProviderSessionResponse> {
-
-        // const {
-        //     amount,
-        //     currency_code
-        // } = context
-
         try {
             const response: AxiosResponse<TapInitiatePaymentResponse> = await axios.post(
                 `${this.baseUrl}/charges`,
@@ -97,10 +86,9 @@ class MyPaymentProviderService extends AbstractPaymentProvider<{}> {
             console.log("Initiate Payment Response:", response);
             // @ts-ignore
             // return { id: response.data.id, session_data: response.data };
-
             return {
                 data: {
-                    id: "apple"
+                    id: 1
                 }
             }
         } catch (e) {
@@ -111,8 +99,6 @@ class MyPaymentProviderService extends AbstractPaymentProvider<{}> {
             }
         }
     }
-
-
 
     async capturePayment(
         paymentData: Record<string, unknown>
@@ -136,7 +122,6 @@ class MyPaymentProviderService extends AbstractPaymentProvider<{}> {
             }
         }
     }
-
 
     async authorizePayment(
         paymentSessionData: Record<string, unknown>,
